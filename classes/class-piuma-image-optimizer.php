@@ -120,7 +120,6 @@ if (!class_exists('piumaImageOptimizer')) {
         public function piuma_url_adjust($default_attachment_url, $home_url)
         {
             $attachment_url  = $home_url;
-            $attachment_url .= 'piuma/';
             $attachment_url .= $this->options['piuma_img_resize_height'];
             $attachment_url .= '_';
             $attachment_url .= $this->options['piuma_img_resize_width'];

@@ -19,3 +19,14 @@ input {
 .avatar{
     margin-right: .5rem;
 }
+
+.notice{
+    display: none;
+    position: fixed !important;
+    top:30px;
+    left: 50%;
+}
+
+.is-visible{
+    display: block;
+}

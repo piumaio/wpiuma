@@ -39,7 +39,16 @@ $piumaImageOptimizer = new piumaImageOptimizer();
 function piuma_image_optimizer_init()
 {
 ?>
+
+
     <div class="wrap">
+        <div id="update-success" class="notice notice-success is-dismissible">
+            <p>settings updated</p>
+        </div>
+
+        <div id="reset-success" class="notice notice-success is-dismissible">
+            <p>settings are resetted</p>
+        </div>
 
 
         <div class="title-area">
@@ -51,7 +60,7 @@ function piuma_image_optimizer_init()
 
             <div class="initial_form box">
 
-                
+
                 <div class="input-text-wrap">
                     <label for="base_remote_url">Your Piuma url</label>
                     <input type="url" pattern="https?://.*" name="base_remote_url" id="base_remote_url" value="<?= get_option('piuma_base_remote_url') ?>">
@@ -63,7 +72,7 @@ function piuma_image_optimizer_init()
                 <input type="number" name="img_resize_width" id="img_resize_width" min="0" value="<?= get_option('piuma_img_resize_width') ?>">
                 <label for="img_resize_qualiy">You image Quality</label>
                 <input type="number" id="img_resize_quality" name="img_resize_quality" min="0" max="100" value="<?= get_option('piuma_img_resize_quality') ?>">
-               
+
                 <hr>
                 <b>I will use pima</b>
                 <br>

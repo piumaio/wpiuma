@@ -9,6 +9,8 @@ function checkRadio() {
   }
 }
 
+function showNotice() {}
+
 function reset() {
   fetch(PIOsettings.pluginsUrl + "reset.php", {
     method: "POST",
@@ -35,7 +37,14 @@ function reset() {
       response => response.text() // .json(), etc.
       // same as function(response) {return response.text();}
     )
-    .then(html => console.log(html));
+    .then(() => {
+        document.getElementById("reset-success").classList.add("is-visible");
+        setTimeout(() => {
+          document
+            .getElementById("reset-success")
+            .classList.remove("is-visible");
+        }, 2000);
+      });
 }
 
 function update() {
@@ -62,7 +71,15 @@ function update() {
   })
     .then(
       response => response.text() // .json(), etc.
+
       // same as function(response) {return response.text();}
     )
-    .then(html => console.log(html));
+    .then(() => {
+      document.getElementById("update-success").classList.add("is-visible");
+      setTimeout(() => {
+        document
+          .getElementById("update-success")
+          .classList.remove("is-visible");
+      }, 2000);
+    });
 }
