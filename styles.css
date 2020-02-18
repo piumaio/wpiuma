@@ -1,0 +1,21 @@
+input {
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+.box {
+  border: 1px solid #ccd0d4;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04);
+  background: #fff;
+  margin: 16px 0;
+  padding: 23px 10px;
+}
+
+.title-area{
+    display: flex;
+    align-items: center;
+
+}
+.avatar{
+    margin-right: .5rem;
+}
