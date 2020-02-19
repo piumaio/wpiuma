@@ -11,7 +11,6 @@ if (!class_exists('piumaImageOptimizer')) {
         public function set_options()
         {
             $this->options = array(
-                'piuma_local_service'               => (get_option('piuma_local_service') == 1) ? true : false,
                 'piuma_base_remote_url'             => (get_option('piuma_base_remote_url') ? get_option('piuma_base_remote_url') : PIO_DIRECTORY_URL),
                 'piuma_img_resize_height'           => (get_option('piuma_img_resize_height')) ? get_option('piuma_img_resize_height') : 0,
                 'piuma_img_resize_width'            => (get_option('piuma_img_resize_width')) ? get_option('piuma_img_resize_width') : 0,
@@ -141,13 +140,9 @@ if (!class_exists('piumaImageOptimizer')) {
             if (in_array($extension, $mime_types_array)) {
                 //$home_url = preg_quote( rtrim( get_home_url(), "/"), "/" );
                 //$attachment_url = preg_replace("/(?!{$home_url})(wp-content\/uploads\/)/ui", PIO_MEDIA_DIR, $attachment_url);
-                $piuma_local_service = $this->options['piuma_local_service'];
 
-                if ($piuma_local_service) {
-                    $home_url = get_home_url() . '/';
-                } else {
-                    $home_url = $this->options['piuma_base_remote_url'];
-                }
+                $home_url = $this->options['piuma_base_remote_url'];
+
                 $attachment_url = $this->piuma_url_adjust($default_attachment_url, $home_url);
             }
             return $attachment_url;
@@ -207,13 +202,9 @@ if (!class_exists('piumaImageOptimizer')) {
 
         public function piuma_replace_images($content)
         {
-            $piuma_local_service = $this->options['piuma_local_service'];
-
-            if ($piuma_local_service) {
-                $home_url = get_home_url() . '/';
-            } else {
+         
                 $home_url = $this->options['piuma_base_remote_url'];
-            }
+      
 
             // Create an instance of DOMDocument.
             $dom = new \DOMDocument();

@@ -11,27 +11,26 @@ input {
   padding: 23px 10px;
 }
 
-.title-area{
-    display: flex;
-    align-items: center;
-
+.title-area {
+  display: flex;
+  align-items: center;
 }
-.avatar{
-    margin-right: .5rem;
-}
-
-.notice{
-    display: none;
-    position: fixed !important;
-    top:30px;
-    left: 50%;
+.avatar {
+  margin-right: 0.5rem;
 }
 
-.is-visible{
-    display: block;
+.notice {
+  display: none;
+  position: fixed !important;
+  top: 30px;
+  left: 50%;
+  transform: translateX(-50%);
 }
 
+.is-visible {
+  display: block;
+}
 
-.hidden{
+.hidden {
   display: none;
 }

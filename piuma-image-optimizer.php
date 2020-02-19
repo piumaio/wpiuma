@@ -49,32 +49,24 @@ function piuma_image_optimizer_init()
         <div id="reset-success" class="notice notice-success is-dismissible">
             <p>settings are resetted</p>
         </div>
-        
+
         <div id="generic-error" class="notice notice-error is-dismissible">
             <p>Sorry but we had an error. please contact the administrator.</p>
         </div>
-        
+
+        <div id="url-error" class="notice notice-error is-dismissible">
+            <p>You must provide a valid url</p>
+        </div>
         <div class="title-area">
             <img itemprop="image" class="TableObject-item avatar flex-shrink-0" src="https://avatars3.githubusercontent.com/u/56169391?s=200&amp;v=4" width="100" height="100" alt="@piumaio">
             <h1>Piuma Image Optimizer</h1>
         </div>
         <div class="panel">
-
-
             <div class="initial_form box">
-
                 <hr>
-                <b>I will use pima</b>
-                <br>
-                <br>
-                <input type="radio" id="remote" name="local_service" value="0" <?php if (get_option('piuma_local_service') == "0") { ?>checked="checked" <?php } ?> onchange="switchUrl()">
-                <label for="remote">Remote</label>
-                <input type="radio" id="local" name="local_service" value="1" <?php if (get_option('piuma_local_service') == "1") { ?>checked="checked" <?php } ?> onchange="switchUrl()">
-                <label for="local">Local</label>
-                <hr>
-                <div id="urlBlock" class="input-text-wrap">
+                <div class="input-text-wrap">
                     <label for="base_remote_url">Your Piuma url</label>
-                    <input type="url" pattern="https?://.*" name="base_remote_url" id="base_remote_url" value="<?= get_option('piuma_base_remote_url') ?>">
+                    <input type="url" pattern="https?://.*" name="base_remote_url" id="base_remote_url" value="<?= get_option('piuma_base_remote_url') ?>" onblur="addTrailing(this)">
                     <hr>
                 </div>
 

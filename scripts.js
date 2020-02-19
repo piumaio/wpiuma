@@ -1,30 +1,7 @@
-document.addEventListener("DOMContentLoaded", function() {
-  switchUrl();
-});
-
-function checkRadio() {
-  var radios = document.getElementsByName("local_service");
-
-  for (var i = 0, length = radios.length; i < length; i++) {
-    if (radios[i].checked) {
-      // do whatever you want with the checked radio
-      return radios[i].value;
-    }
-  }
-}
-
-function switchUrl() {
-  var radio_value = checkRadio();
-  if (radio_value == 1) {
-    document.getElementById("urlBlock").classList.add("hidden");
-    document.getElementsByName("base_remote_url")[0].value = null
-  } else {
-    var element = document.getElementById("urlBlock");
-    if(element) element.classList.remove("hidden");
-  }
- 
-}
-
+var base_remote_url = document.getElementsByName("base_remote_url");
+var img_resize_height = document.getElementsByName("img_resize_height");
+var img_resize_width = document.getElementsByName("img_resize_width");
+var img_resize_quality = document.getElementsByName("img_resize_quality");
 function reset() {
   fetch(PIOsettings.pluginsUrl + "reset.php", {
     method: "POST",
@@ -33,45 +10,23 @@ function reset() {
     }),
 
     body:
-      `local_service=${checkRadio()}` +
-      `&base_remote_url=${
-        document.getElementsByName("base_remote_url")[0].value
-      }` +
-      `&img_resize_height=${
-        document.getElementsByName("img_resize_height")[0].value
-      }` +
-      `&img_resize_width=${
-        document.getElementsByName("img_resize_width")[0].value
-      }` +
-      `&img_resize_quality=${
-        document.getElementsByName("img_resize_quality")[0].value
-      }`
+      `base_remote_url=${base_remote_url[0].value}` +
+      `&img_resize_height=${img_resize_height[0].value}` +
+      `&img_resize_width=${img_resize_width[0].value}` +
+      `&img_resize_quality=${img_resize_quality[0].value}`
   })
     .then(handleErrors)
     .then(() => {
-      document.getElementById("reset-success").classList.add("is-visible");
-      setTimeout(() => {
-        document.getElementById("reset-success").classList.remove("is-visible");
-      }, 2000);
-      document.getElementsByName(
-        "base_remote_url"
-      )[0].value = document.getElementsByName(
-        "img_resize_height"
-      )[0].value = document.getElementsByName(
-        "img_resize_width"
-      )[0].value = document.getElementsByName(
-        "img_resize_quality"
-      )[0].value = null;
+      showMessage('reset-success',2000)
+      base_remote_url[0].value = img_resize_height[0].value = img_resize_width[0].value = img_resize_quality[0].value = null;
     })
     .catch(error => {
-      document.getElementById("generic-error").classList.add("is-visible");
-      setTimeout(() => {
-        document.getElementById("generic-error").classList.remove("is-visible");
-      }, 2000);
+      showMessage('generic-error',2000)
     });
 }
 
 function update() {
+  if(validURL(base_remote_url[0].value) === true){
   fetch(PIOsettings.pluginsUrl + "update.php", {
     method: "POST",
     headers: new Headers({
@@ -79,35 +34,30 @@ function update() {
     }),
 
     body:
-      `local_service=${checkRadio()}` +
-      `&base_remote_url=${
-        document.getElementsByName("base_remote_url")[0].value
-      }` +
-      `&img_resize_height=${
-        document.getElementsByName("img_resize_height")[0].value
-      }` +
-      `&img_resize_width=${
-        document.getElementsByName("img_resize_width")[0].value
-      }` +
-      `&img_resize_quality=${
-        document.getElementsByName("img_resize_quality")[0].value
-      }`
+      `base_remote_url=${base_remote_url[0].value}` +
+      `&img_resize_height=${img_resize_height[0].value}` +
+      `&img_resize_width=${img_resize_width[0].value}` +
+      `&img_resize_quality=${img_resize_quality[0].value}`
   })
     .then(handleErrors)
     .then(response => {
-      document.getElementById("update-success").classList.add("is-visible");
-      setTimeout(() => {
-        document
-          .getElementById("update-success")
-          .classList.remove("is-visible");
-      }, 2000);
+      showMessage('update-success',2000)
     })
     .catch(error => {
-      document.getElementById("generic-error").classList.add("is-visible");
-      setTimeout(() => {
-        document.getElementById("generic-error").classList.remove("is-visible");
-      }, 2000);
+      showMessage('generic-error',2000)
     });
+  }else{
+    showMessage('url-error',2000)
+  }
+}
+
+function showMessage(el, timeout){
+  document.getElementById(el).classList.add("is-visible");
+  setTimeout(() => {
+    document
+      .getElementById(el)
+      .classList.remove("is-visible");
+  }, timeout);
 }
 
 function handleErrors(response) {
@@ -115,4 +65,13 @@ function handleErrors(response) {
     throw Error(response.statusText);
   }
   return response;
+}
+
+function addTrailing(el) {
+  if (el.value.substr(-1) != "/") el.value += "/";
+}
+
+function validURL(str) {
+  var regexp = /(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/;
+  return regexp.test(str);
 }
