@@ -19,7 +19,8 @@ function switchUrl() {
     document.getElementById("urlBlock").classList.add("hidden");
     document.getElementsByName("base_remote_url")[0].value = null
   } else {
-    document.getElementById("urlBlock").classList.remove("hidden");
+    var element = document.getElementById("urlBlock");
+    if(element) element.classList.remove("hidden");
   }
  
 }
