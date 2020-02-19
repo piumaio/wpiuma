@@ -30,3 +30,8 @@ input {
 .is-visible{
     display: block;
 }
+
+
+.hidden{
+  display: none;
+}

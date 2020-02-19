@@ -49,8 +49,11 @@ function piuma_image_optimizer_init()
         <div id="reset-success" class="notice notice-success is-dismissible">
             <p>settings are resetted</p>
         </div>
-
-
+        
+        <div id="generic-error" class="notice notice-error is-dismissible">
+            <p>Sorry but we had an error. please contact the administrator.</p>
+        </div>
+        
         <div class="title-area">
             <img itemprop="image" class="TableObject-item avatar flex-shrink-0" src="https://avatars3.githubusercontent.com/u/56169391?s=200&amp;v=4" width="100" height="100" alt="@piumaio">
             <h1>Piuma Image Optimizer</h1>
@@ -60,28 +63,28 @@ function piuma_image_optimizer_init()
 
             <div class="initial_form box">
 
-
-                <div class="input-text-wrap">
-                    <label for="base_remote_url">Your Piuma url</label>
-                    <input type="url" pattern="https?://.*" name="base_remote_url" id="base_remote_url" value="<?= get_option('piuma_base_remote_url') ?>">
-                </div>
-                <hr>
-                <label for="img_resize_height">You image Height</label>
-                <input type="number" name="img_resize_height" id="img_resize_height" min="0" value="<?= get_option('piuma_img_resize_height') ?>">
-                <label for="img_resize_width">You image Width</label>
-                <input type="number" name="img_resize_width" id="img_resize_width" min="0" value="<?= get_option('piuma_img_resize_width') ?>">
-                <label for="img_resize_qualiy">You image Quality</label>
-                <input type="number" id="img_resize_quality" name="img_resize_quality" min="0" max="100" value="<?= get_option('piuma_img_resize_quality') ?>">
-
                 <hr>
                 <b>I will use pima</b>
                 <br>
                 <br>
-                <input type="radio" id="remote" name="local_service" value="0" <?php if (get_option('piuma_local_service') == "0") { ?>checked="checked" <?php } ?>>
+                <input type="radio" id="remote" name="local_service" value="0" <?php if (get_option('piuma_local_service') == "0") { ?>checked="checked" <?php } ?> onchange="switchUrl()">
                 <label for="remote">Remote</label>
-                <input type="radio" id="local" name="local_service" value="1" <?php if (get_option('piuma_local_service') == "1") { ?>checked="checked" <?php } ?>>
+                <input type="radio" id="local" name="local_service" value="1" <?php if (get_option('piuma_local_service') == "1") { ?>checked="checked" <?php } ?> onchange="switchUrl()">
                 <label for="local">Local</label>
                 <hr>
+                <div id="urlBlock" class="input-text-wrap">
+                    <label for="base_remote_url">Your Piuma url</label>
+                    <input type="url" pattern="https?://.*" name="base_remote_url" id="base_remote_url" value="<?= get_option('piuma_base_remote_url') ?>">
+                    <hr>
+                </div>
+
+                <label for="img_resize_height">You image max Height</label>
+                <input type="number" name="img_resize_height" id="img_resize_height" min="0" value="<?= get_option('piuma_img_resize_height') ?>">
+                <label for="img_resize_width">You image max Width</label>
+                <input type="number" name="img_resize_width" id="img_resize_width" min="0" value="<?= get_option('piuma_img_resize_width') ?>">
+                <label for="img_resize_qualiy">You image Quality</label>
+                <input type="number" id="img_resize_quality" name="img_resize_quality" min="0" max="100" value="<?= get_option('piuma_img_resize_quality') ?>">
+
                 <button class="button button-primary" onclick="update()">update</button>
                 <br>
                 <br>
@@ -107,5 +110,5 @@ function action_init($array)
 };
 
 // add the action 
-add_action('init', 'action_init', 10, 1);
+add_action('admin_init', 'action_init', 10, 1);
 wp_enqueue_style('build_your_site_styles', plugin_dir_url(__FILE__) . '/styles.css');
