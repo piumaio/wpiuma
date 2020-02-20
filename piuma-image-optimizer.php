@@ -93,6 +93,7 @@ function piuma_image_optimizer_init()
 // define the init callback 
 function action_init($array)
 {
+    wp_enqueue_style('build_your_site_styles', plugin_dir_url(__FILE__) . '/styles.css');
     wp_enqueue_script('piuma_image_optimizer_script', plugin_dir_url(__FILE__) . '/scripts.js');
     wp_localize_script('piuma_image_optimizer_script', 'PIOsettings', array(
         'user' => wp_get_current_user(),
@@ -103,4 +104,4 @@ function action_init($array)
 
 // add the action 
 add_action('admin_init', 'action_init', 10, 1);
-wp_enqueue_style('build_your_site_styles', plugin_dir_url(__FILE__) . '/styles.css');
+
