@@ -11,11 +11,10 @@ if (!class_exists('piumaImageOptimizer')) {
         public function set_options()
         {
             $this->options = array(
-                'piuma_local_service'               => true,
-                'piuma_base_remote_url'             => 'https://www.myurl.com/',
-                'piuma_img_resize_height'           => 0,
-                'piuma_img_resize_width'            => 0,
-                'piuma_img_resize_quality'          => 100
+                'piuma_base_remote_url'             => (get_option('piuma_base_remote_url') ? get_option('piuma_base_remote_url') : PIO_DIRECTORY_URL),
+                'piuma_img_resize_height'           => (get_option('piuma_img_resize_height')) ? get_option('piuma_img_resize_height') : 0,
+                'piuma_img_resize_width'            => (get_option('piuma_img_resize_width')) ? get_option('piuma_img_resize_width') : 0,
+                'piuma_img_resize_quality'          => (get_option('piuma_img_resize_quality')) ? get_option('piuma_img_resize_quality') : 100,
             );
         }
 
@@ -26,13 +25,12 @@ if (!class_exists('piumaImageOptimizer')) {
             //add_filter('request', array($this, 'piuma_detect_image'), 999);
 
             $post_type = get_post_type();
-            
+
             add_filter('the_content', array($this, 'piuma_replace_images'), 999);
-            if( in_array($post_type, array('post','page')) ) {
-                
+            if (in_array($post_type, array('post', 'page'))) {
+
                 add_filter('post_thumbnail_html', array($this, 'piuma_replace_images'), 999);
-            }
-            else{
+            } else {
                 add_filter('wp_get_attachment_url', array($this, 'piuma_replace_media_url'), 999);
             }
         }
@@ -121,7 +119,6 @@ if (!class_exists('piumaImageOptimizer')) {
         public function piuma_url_adjust($default_attachment_url, $home_url)
         {
             $attachment_url  = $home_url;
-            $attachment_url .= 'piuma/';
             $attachment_url .= $this->options['piuma_img_resize_height'];
             $attachment_url .= '_';
             $attachment_url .= $this->options['piuma_img_resize_width'];
@@ -143,13 +140,9 @@ if (!class_exists('piumaImageOptimizer')) {
             if (in_array($extension, $mime_types_array)) {
                 //$home_url = preg_quote( rtrim( get_home_url(), "/"), "/" );
                 //$attachment_url = preg_replace("/(?!{$home_url})(wp-content\/uploads\/)/ui", PIO_MEDIA_DIR, $attachment_url);
-                $piuma_local_service = $this->options['piuma_local_service'];
 
-                if ($piuma_local_service) {
-                    $home_url = get_home_url() . '/';
-                } else {
-                    $home_url = $this->options['piuma_base_remote_url'];
-                }
+                $home_url = $this->options['piuma_base_remote_url'];
+
                 $attachment_url = $this->piuma_url_adjust($default_attachment_url, $home_url);
             }
             return $attachment_url;
@@ -209,13 +202,9 @@ if (!class_exists('piumaImageOptimizer')) {
 
         public function piuma_replace_images($content)
         {
-            $piuma_local_service = $this->options['piuma_local_service'];
-
-            if ($piuma_local_service) {
-                $home_url = get_home_url() . '/';
-            } else {
+         
                 $home_url = $this->options['piuma_base_remote_url'];
-            }
+      
 
             // Create an instance of DOMDocument.
             $dom = new \DOMDocument();
