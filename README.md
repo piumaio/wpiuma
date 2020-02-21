@@ -1,19 +1,12 @@
-=== Piuma Image Optimizer ===
+# WPiuma
 
-Contributors: Lotrèk Web Agency
-Requires at least: 
-Tested up to: 
-Stable tag: 
-Requires PHP: 5.3.0
+Wordpress plugin for Piuma, the simple and fast image optimizer server you can host on your machine
 
-Simple and fast image optimizer server you can host on your machine
+## Installation
 
-== Description ==
+TODO
 
-Simple and fast image optimizer server you can host on your machine
-
-
-== Structure ==
+## Structure
 
 ```
 /classes
@@ -22,10 +15,3 @@ define.php
 piuma-image-optimizer.php
 readme.md
 ```
-
-== Changelog ==
-
-
-
-
-Yes. Tested on 5.2.4
