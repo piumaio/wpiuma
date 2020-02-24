@@ -4,7 +4,9 @@ Wordpress plugin for Piuma, the simple and fast image optimizer server you can h
 
 ## Installation
 
-TODO
+You jus need to download the files from https://github.com/piumaio/wpiuma/releases and place the content on yor ```/wp-content/plugins/```.
+
+![Control Panel image](../assets/cp.png?raw=true)
 
 ## Structure
 
