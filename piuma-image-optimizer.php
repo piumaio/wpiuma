@@ -70,11 +70,11 @@ function piuma_image_optimizer_init()
                     <hr>
                 </div>
 
-                <label for="img_resize_height">You image max Height</label>
+                <label for="img_resize_height">Image max Height</label>
                 <input type="number" name="img_resize_height" id="img_resize_height" min="0" value="<?= get_option('piuma_img_resize_height') ?>">
-                <label for="img_resize_width">You image max Width</label>
+                <label for="img_resize_width">Image max Width</label>
                 <input type="number" name="img_resize_width" id="img_resize_width" min="0" value="<?= get_option('piuma_img_resize_width') ?>">
-                <label for="img_resize_qualiy">You image Quality</label>
+                <label for="img_resize_qualiy">Image Quality</label>
                 <input type="number" id="img_resize_quality" name="img_resize_quality" min="0" max="100" value="<?= get_option('piuma_img_resize_quality') ?>">
 
                 <button class="button button-primary" onclick="update()">update</button>
