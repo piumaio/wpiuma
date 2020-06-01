@@ -11,8 +11,6 @@ function reset() {
 
     body:
       `base_remote_url=${base_remote_url[0].value}` +
-      `&img_resize_height=${img_resize_height[0].value}` +
-      `&img_resize_width=${img_resize_width[0].value}` +
       `&img_resize_quality=${img_resize_quality[0].value}`
   })
     .then(handleErrors)
@@ -35,8 +33,6 @@ function update() {
 
     body:
       `base_remote_url=${base_remote_url[0].value}` +
-      `&img_resize_height=${img_resize_height[0].value}` +
-      `&img_resize_width=${img_resize_width[0].value}` +
       `&img_resize_quality=${img_resize_quality[0].value}`
   })
     .then(handleErrors)
