@@ -1,6 +1,4 @@
 var base_remote_url = document.getElementsByName("base_remote_url");
-var img_resize_height = document.getElementsByName("img_resize_height");
-var img_resize_width = document.getElementsByName("img_resize_width");
 var img_resize_quality = document.getElementsByName("img_resize_quality");
 function reset() {
   fetch(PIOsettings.pluginsUrl + "reset.php", {
@@ -16,7 +14,7 @@ function reset() {
     .then(handleErrors)
     .then(() => {
       showMessage('reset-success',2000)
-      base_remote_url[0].value = img_resize_height[0].value = img_resize_width[0].value = img_resize_quality[0].value = null;
+      base_remote_url[0].value = img_resize_quality[0].value = null;
     })
     .catch(error => {
       showMessage('generic-error',2000)
