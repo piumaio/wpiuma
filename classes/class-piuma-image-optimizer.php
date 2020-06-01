@@ -47,7 +47,7 @@ if (!class_exists('piumaImageOptimizer')) {
 
         public function piuma_get_allowed_extensions()
         {
-            return array('jpg', 'jpeg', 'jpe', 'gif', 'png', 'bmp', 'tif', 'tiff', 'ico', 'pdf');
+            return array('jpg', 'jpeg', 'jpe', 'png');
         }
 
 
