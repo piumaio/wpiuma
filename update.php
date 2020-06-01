@@ -9,5 +9,3 @@ foreach ($data as $key => $value) {
         update_option('piuma_' . $key, $value, 'yes');
     }
 }
-var_dump($data);
-echo 'aggiornato';
