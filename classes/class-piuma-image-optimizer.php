@@ -26,12 +26,13 @@ if (!class_exists('piumaImageOptimizer')) {
 
             $post_type = get_post_type();
 
-            add_filter('the_content', array($this, 'piuma_replace_images'), 999);
-            if (in_array($post_type, array('post', 'page'))) {
-
-                add_filter('post_thumbnail_html', array($this, 'piuma_replace_images'), 999);
-            } else {
-                add_filter('wp_get_attachment_url', array($this, 'piuma_replace_media_url'), 999);
+            if (!is_admin()) {
+                add_filter('the_content', array($this, 'piuma_replace_images'), 999);
+                if (in_array($post_type, array('post', 'page'))) {
+                    add_filter('post_thumbnail_html', array($this, 'piuma_replace_images'), 999);
+                } else {
+                    add_filter('wp_get_attachment_url', array($this, 'piuma_replace_media_url'), 999);
+                }
             }
         }
 
@@ -202,9 +203,9 @@ if (!class_exists('piumaImageOptimizer')) {
 
         public function piuma_replace_images($content)
         {
-         
-                $home_url = $this->options['piuma_base_remote_url'];
-      
+
+            $home_url = $this->options['piuma_base_remote_url'];
+
 
             // Create an instance of DOMDocument.
             $dom = new \DOMDocument();
