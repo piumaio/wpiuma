@@ -36,6 +36,14 @@ require_once(PIO_DIRECTORY_PATH . 'classes/class-piuma-image-optimizer.php');
 
 $piumaImageOptimizer = new piumaImageOptimizer();
 
+
+add_action('admin_enqueue_scripts', 'load_admin_style');
+function load_admin_style()
+{
+    wp_enqueue_style('piuma_admin_css', plugin_dir_url(__FILE__) . '/styles.css');
+}
+
+
 function piuma_image_optimizer_init()
 {
 ?>
@@ -98,4 +106,3 @@ function action_init($array)
 
 // add the action 
 add_action('admin_init', 'action_init', 10, 1);
-wp_enqueue_style('build_your_site_styles', plugin_dir_url(__FILE__) . '/styles.css');
