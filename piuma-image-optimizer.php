@@ -34,7 +34,11 @@ require_once(plugin_dir_path(__FILE__) . 'define.php');
 require_once(PIO_DIRECTORY_PATH . 'classes/class-piuma-image-optimizer.php');
 
 
-$piumaImageOptimizer = new piumaImageOptimizer();
+//$piumaImageOptimizer = new piumaImageOptimizer();
+function wp_piuma_load_class() {
+    new piumaImageOptimizer();
+}
+add_action( 'wp', 'wp_piuma_load_class' );
 
 
 add_action('admin_enqueue_scripts', 'load_admin_style');
