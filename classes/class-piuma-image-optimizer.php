@@ -105,7 +105,7 @@ if (!class_exists('piumaImageOptimizer')) {
             }
             return $request;
         }
-        
+
 
         public function piuma_url_adjust($default_attachment_url, $home_url)
         {
@@ -223,7 +223,7 @@ if (!class_exists('piumaImageOptimizer')) {
             $post_id = get_the_ID();
             $post_type = get_post_type($post_id);
             //var_dump($post_type);
-            var_dump(get_the_ID());
+
 
             if (!is_admin($post_id)) {
 
