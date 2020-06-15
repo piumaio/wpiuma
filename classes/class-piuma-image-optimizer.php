@@ -20,11 +20,6 @@ if (!class_exists('piumaImageOptimizer')) {
             );
         }
 
-        public $post_id;
-        public function set_the_id()
-        {
-            $this->post_id = get_the_ID();
-        }
 
         public function piuma_find_file($pattern, $flags = 0)
         {
@@ -139,6 +134,61 @@ if (!class_exists('piumaImageOptimizer')) {
             return $attachment_url;
         }
 
+
+        public function piuma_replace_images($content)
+        {
+
+            $home_url = $this->options['piuma_base_remote_url'];
+            $image_attributes = array('src');
+
+            // Create an instance of DOMDocument.
+            $dom = new \DOMDocument();
+
+            // Supress errors due to malformed HTML.
+            // See http://stackoverflow.com/a/17559716/3059883
+            $libxml_previous_state = libxml_use_internal_errors(true);
+
+            // Populate $dom with $content, making sure to handle UTF-8, otherwise
+            // problems will occur with UTF-8 characters.
+            // Also, make sure that the doctype and HTML tags are not added to our HTML fragment. http://stackoverflow.com/a/22490902/3059883
+            $dom->loadHTML(mb_convert_encoding($content, 'HTML-ENTITIES', 'UTF-8'), LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
+
+            // Restore previous state of libxml_use_internal_errors() now that we're done.
+            libxml_use_internal_errors($libxml_previous_state);
+
+            // Create an instance of DOMXpath.
+            $xpath = new \DOMXpath($dom);
+
+            // Match elements with the lazy-load class (note space around class name)
+            // See http://stackoverflow.com/a/26126336/3059883
+
+            $images = $xpath->query("//img");
+
+
+            foreach ($images as $node) {
+
+                foreach ($image_attributes as $image_attribute) {
+                    $fallback = $node->cloneNode(true);
+
+                    $current_img_attr = $node->getAttribute($image_attribute);
+
+                    if ($current_img_attr) {
+                        $new_img_attr = $this->piuma_url_adjust($current_img_attr, $home_url);
+                        $node->setAttribute($image_attribute, $new_img_attr);
+                    }
+                }
+
+                $noscript = $dom->createElement('noscript', '');
+                $node->parentNode->insertBefore($noscript, $node);
+                $noscript->appendChild($fallback);
+            }
+
+            // Save and return updated HTML.
+            $new_content = $dom->saveHTML();
+            return  $new_content;
+        }
+
+
         public function piuma_replace_lazyload($content)
         {
             $placeholder = get_template_directory_uri() . '/assets/placeholders/squares.svg';
@@ -189,89 +239,24 @@ if (!class_exists('piumaImageOptimizer')) {
             return  $new_content;
         }
 
-        public function piuma_replace_images($content)
-        {
+        function srcset_replace($sources){
+            //wordpress-srcset-cdn.php
+            $piuma_base_remote_url = $this->options['piuma_base_remote_url'];
+            $wp_home_url = get_home_url();
 
-            $home_url = $this->options['piuma_base_remote_url'];
-            $image_attributes = array('src', 'srcset', 'data-thumb');
-
-            // Create an instance of DOMDocument.
-            $dom = new \DOMDocument();
-
-            // Supress errors due to malformed HTML.
-            // See http://stackoverflow.com/a/17559716/3059883
-            $libxml_previous_state = libxml_use_internal_errors(true);
-
-            // Populate $dom with $content, making sure to handle UTF-8, otherwise
-            // problems will occur with UTF-8 characters.
-            // Also, make sure that the doctype and HTML tags are not added to our HTML fragment. http://stackoverflow.com/a/22490902/3059883
-            $dom->loadHTML(mb_convert_encoding($content, 'HTML-ENTITIES', 'UTF-8'), LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
-
-            // Restore previous state of libxml_use_internal_errors() now that we're done.
-            libxml_use_internal_errors($libxml_previous_state);
-
-            // Create an instance of DOMXpath.
-            $xpath = new \DOMXpath($dom);
-
-            // Match elements with the lazy-load class (note space around class name)
-            // See http://stackoverflow.com/a/26126336/3059883
-
-            $images = $xpath->query("//img");
-
-
-            // Process image HTML
-            foreach ($images as $node) {
-                $fallback = $node->cloneNode(true);
-
-                $oldsrc = $node->getAttribute('src');
-                //$node->setAttribute('data-src', $oldsrc);
-                if ($oldsrc) {
-                    $newsrc = $this->piuma_url_adjust($oldsrc, $home_url);
-                    $node->setAttribute('src', $newsrc);
-                }
-
-                $oldsrcset = $node->getAttribute('srcset');
-                //$node->setAttribute('data-srcset', $oldsrcset);
-                if ($oldsrcset) {
-                    $newsrcset = $this->piuma_url_adjust($oldsrcset, $home_url);
-                    $node->setAttribute('srcset', $newsrcset);
-                }
-
-                $noscript = $dom->createElement('noscript', '');
-                $node->parentNode->insertBefore($noscript, $node);
-                $noscript->appendChild($fallback);
+            foreach ( $sources as $source ) {
+                $source_url_converted = $this->piuma_url_adjust($wp_home_url, $piuma_base_remote_url);
+                $sources[ $source['value'] ][ 'url' ] = str_replace($wp_home_url, $source_url_converted, $sources[ $source['value'] ][ 'url' ]);            
             }
-
-
-            // foreach ($images as $node) {
-
-            //     foreach ($image_attributes as $image_attribute) {
-            //         $fallback = $node->cloneNode(true);
-            //         $current_img_attr = $node->getAttribute($image_attribute);
-            //         if ($current_img_attr) {
-            //             $set_img_attr = $this->piuma_url_adjust($current_img_attr, $home_url);
-            //             $node->setAttribute($current_img_attr, $set_img_attr);
-            //         }
-            //     }
-
-            //     $noscript = $dom->createElement('noscript', '');
-            //     $node->parentNode->insertBefore($noscript, $node);
-            //     $noscript->appendChild($fallback);
-            // }
-
-
-            // Save and return updated HTML.
-            $new_content = $dom->saveHTML();
-            return  $new_content;
+            return $sources;
         }
 
         public function __construct()
         {
             $this->set_options();
             $post_id = get_the_ID();
-            $post_type = get_post_type($post_id);
+            //$post_type = get_post_type($post_id);
             //var_dump($post_type);
-
 
             if (!is_admin($post_id)) {
 
@@ -286,13 +271,9 @@ if (!class_exists('piumaImageOptimizer')) {
                 //         break;
                 // }
 
+                add_filter('wp_get_attachment_url', array($this, 'piuma_replace_media_url'), 999);
                 add_filter('the_content', array($this, 'piuma_replace_images'), 999);
-                if (in_array($post_type, array('post', 'page'))) {
-
-                    add_filter('post_thumbnail_html', array($this, 'piuma_replace_images'), 999);
-                } else {
-                    add_filter('wp_get_attachment_url', array($this, 'piuma_replace_media_url'), 999);
-                }
+                add_filter( 'wp_calculate_image_srcset', array($this, 'srcset_replace'), 999);
             }
         }
     }
