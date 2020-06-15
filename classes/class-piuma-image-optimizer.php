@@ -239,14 +239,15 @@ if (!class_exists('piumaImageOptimizer')) {
             return  $new_content;
         }
 
-        function srcset_replace($sources){
+        function srcset_replace($sources)
+        {
             //wordpress-srcset-cdn.php
             $piuma_base_remote_url = $this->options['piuma_base_remote_url'];
             $wp_home_url = get_home_url();
 
-            foreach ( $sources as $source ) {
+            foreach ($sources as $source) {
                 $source_url_converted = $this->piuma_url_adjust($wp_home_url, $piuma_base_remote_url);
-                $sources[ $source['value'] ][ 'url' ] = str_replace($wp_home_url, $source_url_converted, $sources[ $source['value'] ][ 'url' ]);            
+                $sources[$source['value']]['url'] = str_replace($wp_home_url, $source_url_converted, $sources[$source['value']]['url']);
             }
             return $sources;
         }
@@ -273,7 +274,7 @@ if (!class_exists('piumaImageOptimizer')) {
 
                 add_filter('wp_get_attachment_url', array($this, 'piuma_replace_media_url'), 999);
                 add_filter('the_content', array($this, 'piuma_replace_images'), 999);
-                add_filter( 'wp_calculate_image_srcset', array($this, 'srcset_replace'), 999);
+                add_filter('wp_calculate_image_srcset', array($this, 'srcset_replace'), 999);
             }
         }
     }
