@@ -275,15 +275,23 @@ if (!class_exists('piumaImageOptimizer')) {
 
             if (!is_admin($post_id)) {
 
-                add_filter('post_thumbnail_html', array($this, 'piuma_replace_images'), 999);
+                // add_filter('post_thumbnail_html', array($this, 'piuma_replace_images'), 999);
 
-                if ('' !== get_post($post_id)->post_content)
-                    add_filter('the_content', array($this, 'piuma_replace_images'), 999);
+                // if ('' !== get_post($post_id)->post_content)
+                //     add_filter('the_content', array($this, 'piuma_replace_images'), 999);
 
-                switch ($post_type) {
-                    case 'product':
-                        add_filter('wp_get_attachment_url', array($this, 'piuma_replace_media_url'), 999);
-                        break;
+                // switch ($post_type) {
+                //     case 'product':
+                //         add_filter('wp_get_attachment_url', array($this, 'piuma_replace_media_url'), 999);
+                //         break;
+                // }
+
+                add_filter('the_content', array($this, 'piuma_replace_images'), 999);
+                if (in_array($post_type, array('post', 'page'))) {
+
+                    add_filter('post_thumbnail_html', array($this, 'piuma_replace_images'), 999);
+                } else {
+                    add_filter('wp_get_attachment_url', array($this, 'piuma_replace_media_url'), 999);
                 }
             }
         }
