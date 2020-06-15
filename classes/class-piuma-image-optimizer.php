@@ -41,6 +41,71 @@ if (!class_exists('piumaImageOptimizer')) {
             return array('jpg', 'jpeg', 'jpe', 'png');
         }
 
+        public function piuma_detect_image($request)
+        {
+            global $wp, $wpdb;
+
+            // Allowed MIME types
+            $mime_types_array = $this->piuma_get_allowed_extensions();
+            $mime_types = implode("|", $mime_types_array);
+
+            // Prepare the new directory name for REGEX rule
+            $new_media_dir = preg_quote(PIO_MEDIA_DIR, '/');
+
+            // Check if requested file is an attachment
+            preg_match("/{$new_media_dir}(.+)\.({$mime_types})/", $wp->request, $is_file);
+
+            if (!empty($is_file)) {
+                // Get the uploads dir used by WordPress to host the media files
+                $upload_dir = wp_upload_dir();
+
+                // Decode the URI-encoded characters
+                $filename = basename(urldecode($wp->request));
+
+                // Check if filename contains non-ASCII characters. If does, use SQL to find the file on the server
+                if (preg_match('/[^\x20-\x7f]/', $filename)) {
+
+                    // Check if the file is a thumbnail
+                    preg_match("/(.*)(-[\d]+x[\d]+)([\S]{3,4})/", $filename, $is_thumb);
+
+                    // Prepare the pattern
+                    $pattern = "{$upload_dir['baseurl']}/%/{$filename}";
+
+                    // Use the full size URL in SQL query (remove the thumb appendix)
+                    $pattern = (!empty($is_thumb[2])) ? preg_replace("/(-[\d]*x[\d]*)/", "", "{$upload_dir['baseurl']}/%/{$filename}") : $pattern;
+
+                    $file_url = $wpdb->get_var($wpdb->prepare("SELECT guid FROM $wpdb->posts WHERE guid LIKE %s", $pattern));
+
+                    if (!empty($file_url)) {
+                        // Replace the URL with DIR
+                        $file_dir = str_replace($upload_dir['baseurl'], $upload_dir['basedir'], $file_url);
+
+                        // Get the original path
+                        $file_dir = (!empty($is_thumb[2])) ? str_replace($is_thumb[1], "{$is_thumb[1]}{$is_thumb[2]}", $file_dir) : $file_dir;
+                    }
+                } else {
+                    // Prepare the pattern
+                    $pattern = "{$upload_dir['basedir']}/*/{$filename}";
+
+                    $found_files = $this->piuma_find_file($pattern);
+
+                    // Get the original path if file is found
+                    $file_dir = (!empty($found_files[0])) ? $found_files[0] : false;
+                }
+            }
+
+            // Double check if the file exists
+            if (!empty($file_dir) && file_exists($file_dir)) {
+                $file_mime = mime_content_type($file_dir);
+
+                // Set headers
+                header('Content-type: ' . $file_mime);
+                readfile($file_dir);
+                die();
+            }
+            return $request;
+        }
+        
 
         public function piuma_url_adjust($default_attachment_url, $home_url)
         {
@@ -155,14 +220,16 @@ if (!class_exists('piumaImageOptimizer')) {
         public function __construct()
         {
             $this->set_options();
-            $post_type = get_post_type();
+            $post_id = get_the_ID();
+            $post_type = get_post_type($post_id);
             //var_dump($post_type);
+            var_dump(get_the_ID());
 
-            if (!is_admin()) {
+            if (!is_admin($post_id)) {
 
                 add_filter('post_thumbnail_html', array($this, 'piuma_replace_images'), 999);
 
-                if ('' !== get_post()->post_content)
+                if ('' !== get_post($post_id)->post_content)
                     add_filter('the_content', array($this, 'piuma_replace_images'), 999);
 
                 switch ($post_type) {
