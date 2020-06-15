@@ -139,7 +139,55 @@ if (!class_exists('piumaImageOptimizer')) {
             return $attachment_url;
         }
 
+        public function piuma_replace_lazyload($content)
+        {
+            $placeholder = get_template_directory_uri() . '/assets/placeholders/squares.svg';
 
+            // Create an instance of DOMDocument.
+            $dom = new \DOMDocument();
+
+            // Supress errors due to malformed HTML.
+            // See http://stackoverflow.com/a/17559716/3059883
+            $libxml_previous_state = libxml_use_internal_errors(true);
+
+            // Populate $dom with $content, making sure to handle UTF-8, otherwise
+            // problems will occur with UTF-8 characters.
+            // Also, make sure that the doctype and HTML tags are not added to our HTML fragment. http://stackoverflow.com/a/22490902/3059883
+            $dom->loadHTML(mb_convert_encoding($content, 'HTML-ENTITIES', 'UTF-8'), LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
+
+            // Restore previous state of libxml_use_internal_errors() now that we're done.
+            libxml_use_internal_errors($libxml_previous_state);
+
+            // Create an instance of DOMXpath.
+            $xpath = new \DOMXpath($dom);
+
+            // Match elements with the lazy-load class (note space around class name)
+            // See http://stackoverflow.com/a/26126336/3059883
+            $lazy_load_images = $xpath->query("//img[ contains( concat( ' ', normalize-space( @class ), ' '), ' lazy-load ' ) ]");
+
+            // Process image HTML
+            foreach ($lazy_load_images as $node) {
+                $fallback = $node->cloneNode(true);
+
+                $oldsrc = $node->getAttribute('src');
+                $node->setAttribute('data-src', $oldsrc);
+                $newsrc = $placeholder;
+                $node->setAttribute('src', $newsrc);
+
+                $oldsrcset = $node->getAttribute('srcset');
+                $node->setAttribute('data-srcset', $oldsrcset);
+                $newsrcset = '';
+                $node->setAttribute('srcset', $newsrcset);
+
+                $noscript = $dom->createElement('noscript', '');
+                $node->parentNode->insertBefore($noscript, $node);
+                $noscript->appendChild($fallback);
+            }
+
+            // Save and return updated HTML.
+            $new_content = $dom->saveHTML();
+            return  $new_content;
+        }
 
         public function piuma_replace_images($content)
         {
