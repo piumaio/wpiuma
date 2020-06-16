@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: Piuma Image Optimizer
-Version: 1.0
+Version: 1.1
 Description: Simple and fast WP image optimizer server you can host on your machine
 Author: Lotrèk Web Agency
 Author URI: https://www.lotrek.it
