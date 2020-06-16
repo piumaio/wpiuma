@@ -151,7 +151,7 @@ if (!class_exists('piumaImageOptimizer')) {
             // Populate $dom with $content, making sure to handle UTF-8, otherwise
             // problems will occur with UTF-8 characters.
             // Also, make sure that the doctype and HTML tags are not added to our HTML fragment. http://stackoverflow.com/a/22490902/3059883
-            $dom->loadHTML(mb_convert_encoding($content, 'HTML-ENTITIES', 'UTF-8'), LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
+            $dom->loadHTML('<div>' . mb_convert_encoding($content, 'HTML-ENTITIES', 'UTF-8') . '</div>', LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
 
             // Restore previous state of libxml_use_internal_errors() now that we're done.
             libxml_use_internal_errors($libxml_previous_state);
@@ -163,7 +163,6 @@ if (!class_exists('piumaImageOptimizer')) {
             // See http://stackoverflow.com/a/26126336/3059883
 
             $images = $xpath->query("//img");
-
 
             foreach ($images as $node) {
 
@@ -185,7 +184,9 @@ if (!class_exists('piumaImageOptimizer')) {
 
             // Save and return updated HTML.
             $new_content = $dom->saveHTML();
-            return  $new_content;
+            $new_content = substr($new_content, 5, -7);
+
+            return $new_content;
         }
 
 
