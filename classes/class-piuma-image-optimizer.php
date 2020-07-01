@@ -273,7 +273,7 @@ if (!class_exists('piumaImageOptimizer')) {
                 //         break;
                 // }
 
-                add_filter('wp_get_attachment_url', array($this, 'piuma_replace_media_url'), 999);
+                add_action('wp_body_open', function() {add_filter('wp_get_attachment_url', array($this, 'piuma_replace_media_url'), 999);});
                 add_filter('the_content', array($this, 'piuma_replace_images'), 999);
                 add_filter('wp_calculate_image_srcset', array($this, 'srcset_replace'), 999);
             }
