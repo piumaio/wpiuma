@@ -14,6 +14,7 @@ if (!class_exists('piumaImageOptimizer')) {
                 'piuma_base_remote_url'             => (get_option('piuma_base_remote_url') ? get_option('piuma_base_remote_url') : PIO_DIRECTORY_URL),
                 //'piuma_img_resize_height'           => (get_option('piuma_img_resize_height')) ? get_option('piuma_img_resize_height') : 0,
                 //'piuma_img_resize_width'            => (get_option('piuma_img_resize_width')) ? get_option('piuma_img_resize_width') : 0,
+                'piuma_img_convert'                 => (get_option('piuma_img_convert')) ? get_option('piuma_img_convert') : '',
                 'piuma_img_resize_height'           => 0,
                 'piuma_img_resize_width'            => 0,
                 'piuma_img_resize_quality'          => (get_option('piuma_img_resize_quality')) ? get_option('piuma_img_resize_quality') : 100,
@@ -33,7 +34,7 @@ if (!class_exists('piumaImageOptimizer')) {
 
         public function piuma_get_allowed_extensions()
         {
-            return array('jpg', 'jpeg', 'jpe', 'png');
+            return array('jpg', 'jpeg', 'jpe', 'png', 'webp');
         }
 
         public function piuma_detect_image($request)
@@ -110,6 +111,9 @@ if (!class_exists('piumaImageOptimizer')) {
             $attachment_url .= $this->options['piuma_img_resize_width'];
             $attachment_url .= '_';
             $attachment_url .= $this->options['piuma_img_resize_quality'];
+            if (!empty($this->options['piuma_img_convert'])) {
+                $attachment_url .= ':' . $this->options['piuma_img_convert'];
+            }
             $attachment_url .= '/';
             $attachment_url .= $default_attachment_url;
 
@@ -260,7 +264,7 @@ if (!class_exists('piumaImageOptimizer')) {
             //$post_type = get_post_type($post_id);
             //var_dump($post_type);
 
-            if (!is_admin($post_id)) {
+            if (!is_admin() || wp_doing_ajax()) {
 
                 // add_filter('post_thumbnail_html', array($this, 'piuma_replace_images'), 999);
 
@@ -273,7 +277,9 @@ if (!class_exists('piumaImageOptimizer')) {
                 //         break;
                 // }
 
-                add_action('wp_body_open', function() {add_filter('wp_get_attachment_url', array($this, 'piuma_replace_media_url'), 999);});
+                add_action('wp_body_open', function() {
+                  add_filter('wp_get_attachment_url', array($this, 'piuma_replace_media_url'), 999);
+                });
                 add_filter('the_content', array($this, 'piuma_replace_images'), 999);
                 add_filter('wp_calculate_image_srcset', array($this, 'srcset_replace'), 999);
             }

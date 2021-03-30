@@ -81,6 +81,11 @@ function piuma_image_optimizer_init()
                     <input type="url" pattern="https?://.*" name="base_remote_url" id="base_remote_url" value="<?= get_option('piuma_base_remote_url') ?>" onblur="addTrailing(this)">
                     <hr>
                 </div>
+                <div class="input-text-wrap">
+                    <label for="img_convert">Convert to</label>
+                    <input type="text" name="img_convert" id="img_convert" value="<?= get_option('piuma_img_convert') ?>" >
+                    <hr>
+                </div>
                 <label for="img_resize_qualiy">Image Quality</label>
                 <input type="number" id="img_resize_quality" name="img_resize_quality" min="0" max="100" value="<?= get_option('piuma_img_resize_quality') ?>">
 
@@ -97,7 +102,7 @@ function piuma_image_optimizer_init()
 <?php
 }
 
-// define the init callback 
+// define the init callback
 function action_init($array)
 {
     wp_enqueue_script('piuma_image_optimizer_script', plugin_dir_url(__FILE__) . '/scripts.js');
@@ -108,5 +113,5 @@ function action_init($array)
     ));
 };
 
-// add the action 
+// add the action
 add_action('admin_init', 'action_init', 10, 1);
