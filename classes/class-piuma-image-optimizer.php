@@ -174,8 +174,9 @@ if (!class_exists('piumaImageOptimizer')) {
                     $fallback = $node->cloneNode(true);
 
                     $current_img_attr = $node->getAttribute($image_attribute);
+                    $extension = pathinfo($current_img_attr, PATHINFO_EXTENSION);
 
-                    if ($current_img_attr) {
+                    if ($current_img_attr && in_array($extension, $this->piuma_get_allowed_extensions())) {
                         $new_img_attr = $this->piuma_url_adjust($current_img_attr, $home_url);
                         $node->setAttribute($image_attribute, $new_img_attr);
                     }
