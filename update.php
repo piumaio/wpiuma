@@ -15,6 +15,7 @@ if(current_user_can('administrator')) {
     $remote_url = $data['base_remote_url'];
     $quality = $data['img_resize_quality'];
     $convert = $data['img_convert'];
+    $adaptive_quality = array_key_exists('img_resize_quality_adaptive', $data);
     $min = 0;
     $max = 100;
     if(wp_http_validate_url($remote_url)){
@@ -26,6 +27,7 @@ if(current_user_can('administrator')) {
 
     updatePiumaOptions('img_convert', $convert);
 
+    updatePiumaOptions('img_resize_quality_adaptive', $adaptive_quality);
     if( ($quality >= $min) && ($quality <= $max)){
         updatePiumaOptions('img_resize_quality', $quality);
     }else{

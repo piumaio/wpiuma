@@ -18,6 +18,7 @@ if (!class_exists('piumaImageOptimizer')) {
                 'piuma_img_resize_height'           => 0,
                 'piuma_img_resize_width'            => 0,
                 'piuma_img_resize_quality'          => (get_option('piuma_img_resize_quality')) ? get_option('piuma_img_resize_quality') : 100,
+                'piuma_img_resize_quality_adaptive' => get_option('piuma_img_resize_quality_adaptive') ?: false
             );
         }
 
@@ -44,6 +45,9 @@ if (!class_exists('piumaImageOptimizer')) {
             $attachment_url .= $this->options['piuma_img_resize_width'];
             $attachment_url .= '_';
             $attachment_url .= $this->options['piuma_img_resize_quality'];
+            if ($this->options['piuma_img_resize_quality_adaptive']) {
+              $attachment_url .= 'a';
+            }
             if (!empty($this->options['piuma_img_convert'])) {
                 $attachment_url .= ':' . $this->options['piuma_img_convert'];
             }

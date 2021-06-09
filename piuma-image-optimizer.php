@@ -78,21 +78,31 @@ function piuma_image_optimizer_init()
                 <hr>
                 <div class="input-text-wrap">
                     <label for="base_remote_url">Your Piuma url</label>
-                    <input type="url" pattern="https?://.*" name="base_remote_url" id="base_remote_url" value="<?= get_option('piuma_base_remote_url') ?>" onblur="addTrailing(this)">
+                    <input type="url" pattern="https?://.*" name="base_remote_url" onchange="loadExtensions()" id="base_remote_url" value="<?= get_option('piuma_base_remote_url') ?>" onblur="addTrailing(this)">
                     <hr>
                 </div>
                 <div class="input-text-wrap">
-                    <label for="img_convert">Convert to</label>
-                    <input type="text" name="img_convert" id="img_convert" value="<?= get_option('piuma_img_convert') ?>" >
+                    <label for="img_convert">Convert to</label> <br>
+                    <select name="img_convert" id="img_convert" disabled data-last-value="<?= get_option('piuma_img_convert') ?>" >
+                        <option value="default">Initial image extension</option>
+                        <option value="auto">Auto image conversion</option>
+                    </select>
                     <hr>
                 </div>
-                <label for="img_resize_qualiy">Image Quality</label>
-                <input type="number" id="img_resize_quality" name="img_resize_quality" min="0" max="100" value="<?= get_option('piuma_img_resize_quality') ?>">
+                <div class="input-text-wrap">
+                  <label for="img_resize_qualiy">Image Quality</label>
+                  <input type="number" id="img_resize_quality" name="img_resize_quality" min="0" max="100" value="<?= get_option('piuma_img_resize_quality') ?>">
+                  <input type="checkbox" id="img_resize_quality_adaptive" name="img_resize_quality_adaptive" <?= get_option('piuma_img_resize_quality_adaptive') ? 'checked' : '' ?>>
+                  <label for="img_resize_quality_adaptive">Use adaptive quality (see <a href="https://github.com/piumaio/piuma/#adaptive-quality" target="_blank">here</a> for details)</label>
+                </div>
+                <div class="input-text-wrap">
+                  <br>
+                  <button class="button button-primary" onclick="update()">update</button>
+                  <br>
+                  <br>
+                  <button class="button button-secondary" onclick="reset()">reset to defaults</button>
+                </div>
 
-                <button class="button button-primary" onclick="update()">update</button>
-                <br>
-                <br>
-                <button class="button button-secondary" onclick="reset()">reset to defaults</button>
             </div>
 
 
