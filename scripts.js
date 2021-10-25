@@ -61,6 +61,7 @@ function showMessage(el, timeout) {
 }
 
 function loadExtensions() {
+    if (!base_remote_url) return;
     fetch(base_remote_url[0].value).then(r => r.json()).then(json => {
         document.querySelectorAll('.remote-convert-to-option').forEach(e => e.remove());
         img_convert[0].disabled = false;

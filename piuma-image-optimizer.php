@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: Piuma Image Optimizer
-Version: 1.1
+Version: 1.2.1
 Description: Simple and fast WP image optimizer server you can host on your machine
 Author: Lotrèk Web Agency
 Author URI: https://www.lotrek.it
@@ -113,15 +113,17 @@ function piuma_image_optimizer_init()
 }
 
 // define the init callback
-function action_init($array)
+function piuma_action_init($array)
 {
-    wp_enqueue_script('piuma_image_optimizer_script', plugin_dir_url(__FILE__) . '/scripts.js');
-    wp_localize_script('piuma_image_optimizer_script', 'PIOsettings', array(
-        'user' => wp_get_current_user(),
-        'nonce' =>  wp_create_nonce('wp_rest'),
-        'pluginsUrl' => plugin_dir_url(__FILE__),
-    ));
+    if (get_current_screen() && get_current_screen()->id == "toplevel_page_piuma-plugin") {
+        wp_enqueue_script('piuma_image_optimizer_script', plugin_dir_url(__FILE__) . '/scripts.js');
+        wp_localize_script('piuma_image_optimizer_script', 'PIOsettings', array(
+            'user' => wp_get_current_user(),
+            'nonce' =>  wp_create_nonce('wp_rest'),
+            'pluginsUrl' => plugin_dir_url(__FILE__),
+        ));
+    }
 };
 
 // add the action
-add_action('admin_init', 'action_init', 10, 1);
+add_action('admin_enqueue_scripts', 'piuma_action_init', 30, 1);
